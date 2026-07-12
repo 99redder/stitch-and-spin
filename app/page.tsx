@@ -143,8 +143,8 @@ export default function Home() {
 
       <div className="game-grid">
         <aside className="wheel-column animal-column">
-          <Wheel title="Animal One" items={animalsA} rotation={rotations[0]} spinning={spinning} />
-          <Wheel title="Animal Two" items={animalsB} rotation={rotations[1]} spinning={spinning} />
+          <Wheel title="Animal #1" items={animalsA} rotation={rotations[0]} spinning={spinning} />
+          <Wheel title="Animal #2" items={animalsB} rotation={rotations[1]} spinning={spinning} />
         </aside>
 
         <section className={`reveal-stage ${hasSpun ? "celebrate" : ""}`} aria-live="polite">
@@ -170,8 +170,8 @@ export default function Home() {
         </section>
 
         <aside className="wheel-column accessory-column">
-          <Wheel title="Accessory One" items={accessoriesA} rotation={rotations[2]} spinning={spinning} compact />
-          <Wheel title="Accessory Two" items={accessoriesB} rotation={rotations[3]} spinning={spinning} compact />
+          <Wheel title="Accessory #1" items={accessoriesA} rotation={rotations[2]} spinning={spinning} compact />
+          <Wheel title="Accessory #2" items={accessoriesB} rotation={rotations[3]} spinning={spinning} compact />
         </aside>
       </div>
       <footer><span>✿</span> Made for curious crocheters &amp; creative creatures <span>✿</span></footer>
