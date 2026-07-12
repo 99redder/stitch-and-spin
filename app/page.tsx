@@ -74,18 +74,54 @@ export default function Home() {
   const [spinning, setSpinning] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
   const audioRef = useRef<AudioContext | null>(null);
+  const timersRef = useRef<number[]>([]);
 
-  useEffect(() => () => audioRef.current?.close(), []);
+  useEffect(() => () => { timersRef.current.forEach(window.clearTimeout); audioRef.current?.close(); }, []);
 
-  const tick = () => {
+  const getAudio = () => {
+    const AudioCtx = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = audioRef.current || new AudioCtx(); audioRef.current = ctx;
+    if (ctx.state === "suspended") void ctx.resume();
+    return ctx;
+  };
+
+  const ratchetClick = (strength = 1) => {
     try {
-      const AudioCtx = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      const ctx = audioRef.current || new AudioCtx(); audioRef.current = ctx;
-      const osc = ctx.createOscillator(); const gain = ctx.createGain();
-      osc.frequency.value = 330 + Math.random() * 180; osc.type = "triangle";
-      gain.gain.setValueAtTime(.055, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .045);
-      osc.connect(gain).connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + .05);
+      const ctx = getAudio();
+      const length = Math.floor(ctx.sampleRate * .025);
+      const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 5);
+      const source = ctx.createBufferSource(); const filter = ctx.createBiquadFilter(); const gain = ctx.createGain();
+      filter.type = "bandpass"; filter.frequency.value = 1900 + Math.random() * 500; filter.Q.value = 1.5;
+      gain.gain.value = .11 * strength; source.buffer = buffer;
+      source.connect(filter).connect(gain).connect(ctx.destination); source.start();
     } catch { /* sound is a progressive enhancement */ }
+  };
+
+  const successSound = () => {
+    try {
+      const ctx = getAudio();
+      [523.25, 659.25, 783.99, 1046.5].forEach((frequency, i) => {
+        const osc = ctx.createOscillator(); const gain = ctx.createGain(); const start = ctx.currentTime + i * .085;
+        osc.type = "sine"; osc.frequency.setValueAtTime(frequency, start);
+        gain.gain.setValueAtTime(.001, start); gain.gain.linearRampToValueAtTime(.11, start + .02); gain.gain.exponentialRampToValueAtTime(.001, start + .42);
+        osc.connect(gain).connect(ctx.destination); osc.start(start); osc.stop(start + .45);
+      });
+    } catch { /* sound is a progressive enhancement */ }
+  };
+
+  const playSpinRatchet = () => {
+    const started = performance.now();
+    const click = () => {
+      const elapsed = performance.now() - started;
+      if (elapsed >= 3050) return;
+      ratchetClick(Math.max(.55, 1 - elapsed / 6500));
+      const progress = elapsed / 3050;
+      const delay = 34 + Math.pow(progress, 2.6) * 225;
+      timersRef.current.push(window.setTimeout(click, delay));
+    };
+    click();
   };
 
   const spin = () => {
@@ -93,16 +129,15 @@ export default function Home() {
     setSpinning(true); setHasSpun(false);
     const next = sets.map(() => Math.floor(Math.random() * 10));
     setRotations(prev => prev.map((r, i) => r + 1440 + (10 - next[i]) * 36 - (r % 360)));
-    let count = 0;
-    const ticker = window.setInterval(() => { tick(); if (++count > 30) window.clearInterval(ticker); }, 95);
-    window.setTimeout(() => { setPicks(next); setSpinning(false); setHasSpun(true); tick(); }, 3200);
+    playSpinRatchet();
+    timersRef.current.push(window.setTimeout(() => { setPicks(next); setSpinning(false); setHasSpun(true); successSound(); }, 3200));
   };
 
   return (
     <main>
-      <header>
+      <header className="brand-header">
         <div className="brand-mark" aria-hidden="true">🧶</div>
-        <div><p className="eyebrow">Florence Mae Gift&apos;s</p><h1>Stitch &amp; Spin</h1><p className="subtitle">The crochet creature challenge</p></div>
+        <div className="logo-lockup"><p className="brand-owner">Florence Mae Gift&apos;s</p><h1>Stitch <span>&amp;</span> Spin</h1><div className="challenge-ribbon"><i>✦</i> The Crochet Creature Challenge <i>✦</i></div></div>
         <div className="round-label">MAKE<br/>MAGIC!</div>
       </header>
 
@@ -112,7 +147,8 @@ export default function Home() {
           <Wheel title="Animal Two" items={animalsB} rotation={rotations[1]} spinning={spinning} />
         </aside>
 
-        <section className="reveal-stage" aria-live="polite">
+        <section className={`reveal-stage ${hasSpun ? "celebrate" : ""}`} aria-live="polite">
+          <div className="confetti" aria-hidden="true">{Array.from({length: 22}, (_, i) => <i key={i} style={{"--i": i, "--x": `${(i - 10.5) * 25}px`, "--y": `${145 + (i % 5) * 24}px`} as React.CSSProperties}/>)}</div>
           <div className="bulbs" aria-hidden="true">{Array.from({length: 13}, (_, i) => <i key={i}/>)}</div>
           <p className="stage-kicker">Today’s crochet challenge</p>
           <h2>{hasSpun ? "Your mashup is..." : "Ready to meet your muse?"}</h2>
