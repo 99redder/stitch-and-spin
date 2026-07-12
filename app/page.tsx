@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 type Item = { name: string; icon: string };
 
 const animalsA: Item[] = [
-  { name: "Red Panda", icon: "🦊" }, { name: "Axolotl", icon: "🦎" },
+  { name: "Red Panda", icon: "🐼" }, { name: "Axolotl", icon: "🦎" },
   { name: "Elephant", icon: "🐘" }, { name: "Bumblebee", icon: "🐝" },
   { name: "Penguin", icon: "🐧" }, { name: "Bunny", icon: "🐰" },
   { name: "Octopus", icon: "🐙" }, { name: "Frog", icon: "🐸" },
@@ -49,7 +49,7 @@ function Wheel({ title, items, rotation, spinning, compact = false }: { title: s
           <div className="wheel-rim-dots" />
           {items.map((item, i) => {
             const angle = i * 36 + 18;
-            return <span className="wheel-label" key={item.name} style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-38%) rotate(90deg)` }}>{item.name}</span>;
+            return <span className="wheel-label" key={item.name} style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-38%) rotate(90deg)` }}><b>{item.icon}</b><em>{item.name}</em></span>;
           })}
           <div className="wheel-hub"><span>♥</span></div>
         </div>
@@ -69,7 +69,7 @@ function PickCard({ item, label, revealed }: { item: Item; label: string; reveal
 
 export default function Home() {
   const sets = [animalsA, animalsB, accessoriesA, accessoriesB];
-  const [picks, setPicks] = useState([0, 1, 2, 3]);
+  const [picks, setPicks] = useState([0, 0, 0, 0]);
   const [rotations, setRotations] = useState([0, 0, 0, 0]);
   const [spinning, setSpinning] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
@@ -102,7 +102,7 @@ export default function Home() {
     <main>
       <header>
         <div className="brand-mark" aria-hidden="true">🧶</div>
-        <div><p className="eyebrow">The crochet creature challenge</p><h1>Stitch &amp; Spin</h1><p className="subtitle">Four wheels. One wonderfully wild amigurumi.</p></div>
+        <div><p className="eyebrow">Florence Mae Gift&apos;s</p><h1>Stitch &amp; Spin</h1><p className="subtitle">The crochet creature challenge</p></div>
         <div className="round-label">MAKE<br/>MAGIC!</div>
       </header>
 
@@ -122,10 +122,10 @@ export default function Home() {
             <PickCard item={sets[1][picks[1]]} label="Animal two" revealed={hasSpun} />
           </div>
           <div className="accessory-strip">
-            <span>Styled with</span>
-            <b>{sets[2][picks[2]].icon} {hasSpun ? sets[2][picks[2]].name : "a surprise"}</b>
+            <span className="styled-label">Styled with</span>
+            <div className="accessory-pick"><i>{sets[2][picks[2]].icon}</i><b>{hasSpun ? sets[2][picks[2]].name : "A surprise"}</b></div>
             <em>+</em>
-            <b>{sets[3][picks[3]].icon} {hasSpun ? sets[3][picks[3]].name : "a surprise"}</b>
+            <div className="accessory-pick"><i>{sets[3][picks[3]].icon}</i><b>{hasSpun ? sets[3][picks[3]].name : "A surprise"}</b></div>
           </div>
           <button onClick={spin} disabled={spinning} className="spin-button">
             <span>{spinning ? "SPINNING..." : "SPIN!"}</span><small>{spinning ? "Hold onto your yarn" : "Create my crochet challenge"}</small>
