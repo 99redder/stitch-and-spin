@@ -60,12 +60,13 @@ function Wheel({ title, items, rotation, spinning }: { title: string; items: Ite
 
 function AccessorySelector({ title, items, position, spinning }: { title: string; items: Item[]; position: number; spinning: boolean }) {
   const reelItems = useMemo(() => Array.from({ length: 400 }, (_, i) => items[i % items.length]), [items]);
+  const reelSlot = 76;
   return (
     <section className="selector-unit" aria-label={`${title} scrolling selector`}>
       <div className="selector-title"><span>✦</span>{title}</div>
       <div className="selector-window">
         <div className="selector-pointer" aria-hidden="true" />
-        <div className={`selector-track ${spinning ? "is-scrolling" : ""}`} style={{ transform: `translateX(calc(50% - (var(--reel-slot) / 2) - (${position} * var(--reel-slot))))` }}>
+        <div className={`selector-track ${spinning ? "is-scrolling" : ""}`} style={{ transform: `translateX(calc(50% - ${reelSlot / 2}px - ${position * reelSlot}px))` }}>
           {reelItems.map((item, i) => <div className={`selector-item ${i === position ? "selected" : ""}`} key={`${item.name}-${i}`}><b>{item.icon}</b><em>{item.name}</em></div>)}
         </div>
       </div>
