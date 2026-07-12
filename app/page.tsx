@@ -154,7 +154,7 @@ export default function Home() {
         <section className={`reveal-stage ${hasSpun ? "celebrate" : ""}`} aria-live="polite">
           <div className="confetti" aria-hidden="true">{Array.from({length: 22}, (_, i) => <i key={i} style={{"--i": i, "--x": `${(i - 10.5) * 25}px`, "--y": `${145 + (i % 5) * 24}px`} as React.CSSProperties}/>)}</div>
           <p className="stage-kicker">Today’s crochet challenge</p>
-          <h2>{hasSpun ? "Your mashup is..." : "Ready to meet your muse?"}</h2>
+          <h2>{hasSpun ? "Your mashup is..." : "What will I make next?"}</h2>
           <div className="animal-picks">
             <PickCard item={sets[0][picks[0]]} label="Animal one" revealed={hasSpun} />
             <div className="plus">+</div>
@@ -167,9 +167,8 @@ export default function Home() {
             <div className={`accessory-pick ${spinning ? "cycling" : ""}`} aria-label={spinning || hasSpun ? sets[3][accessoryPreview[1]].name : "Mystery accessory"}><i>{spinning || hasSpun ? sets[3][accessoryPreview[1]].icon : "?"}</i>{(spinning || hasSpun) && <b>{sets[3][accessoryPreview[1]].name}</b>}</div>
           </div>
           <button onClick={spin} disabled={spinning} className="spin-button">
-            <span>{spinning ? "SPINNING..." : "SPIN!"}</span><small>{spinning ? "Hold onto your yarn" : "Create my crochet challenge"}</small>
+            <span>SPIN!</span>
           </button>
-          <p className="hint">Sound on for the full game-show moment!</p>
         </section>
 
         <aside className="wheel-column right-column">
