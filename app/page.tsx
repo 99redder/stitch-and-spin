@@ -49,7 +49,7 @@ function Wheel({ title, items, rotation, spinning }: { title: string; items: Ite
           <div className="wheel-rim-dots" />
           {items.map((item, i) => {
             const angle = i * 36 + 18;
-            return <span className="wheel-label" key={item.name} style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-38%) rotate(90deg)` }}><b>{item.icon}</b><em>{item.name}</em></span>;
+            return <span className="wheel-label" key={item.name} aria-label={item.name} style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-38%) rotate(90deg)` }}><b>{item.icon}</b></span>;
           })}
           <div className="wheel-hub"><span>♥</span></div>
         </div>
