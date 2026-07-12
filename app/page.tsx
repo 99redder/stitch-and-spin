@@ -154,8 +154,10 @@ export default function Home() {
   return (
     <main>
       <header className="brand-header">
-        <figure className="header-art portrait-art"><img src="./florence-cartoon.png" alt="Cartoon portrait of Florence Mae Gifts’ crochet artist" /></figure>
-        <div className="logo-lockup"><p className="brand-owner">Florence Mae Gift&apos;s</p><h1>Stitch <span>&amp;</span> Spin</h1><div className="challenge-ribbon"><i>✦</i> The Crochet Creature Challenge <i>✦</i></div></div>
+        <div className="logo-lockup">
+          <figure className="header-art portrait-art"><img src="./florence-cartoon.png" alt="Cartoon portrait of Florence Mae Gifts’ crochet artist" /></figure>
+          <div className="logo-copy"><p className="brand-owner">Florence Mae Gift&apos;s</p><h1>Stitch <span>&amp;</span> Spin</h1><div className="challenge-ribbon"><i>✦</i> The Crochet Creature Challenge <i>✦</i></div></div>
+        </div>
       </header>
 
       <div className="game-grid">
