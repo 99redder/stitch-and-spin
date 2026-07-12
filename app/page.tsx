@@ -166,7 +166,6 @@ export default function Home() {
 
         <section className={`reveal-stage ${hasSpun ? "celebrate" : ""}`} aria-live="polite">
           <div className="confetti" aria-hidden="true">{Array.from({length: 22}, (_, i) => <i key={i} style={{"--i": i, "--x": `${(i - 10.5) * 25}px`, "--y": `${145 + (i % 5) * 24}px`} as React.CSSProperties}/>)}</div>
-          <div className="bulbs" aria-hidden="true">{Array.from({length: 13}, (_, i) => <i key={i}/>)}</div>
           <p className="stage-kicker">Today’s crochet challenge</p>
           <h2>{hasSpun ? "Your mashup is..." : "Ready to meet your muse?"}</h2>
           <div className="animal-picks">
