@@ -38,11 +38,11 @@ const accessoriesB: Item[] = [
 
 const palettes = ["#ff6b6b", "#ffc857", "#43c6ac", "#6c63ff", "#ff8fc7", "#78a8ff", "#fa8b55", "#a8d96f", "#b784e6", "#46b9d3"];
 
-function Wheel({ title, items, rotation, spinning, compact = false }: { title: string; items: Item[]; rotation: number; spinning: boolean; compact?: boolean }) {
+function Wheel({ title, items, rotation, spinning }: { title: string; items: Item[]; rotation: number; spinning: boolean }) {
   const gradient = useMemo(() => `conic-gradient(${items.map((_, i) => `${palettes[i]} ${i * 10}% ${(i + 1) * 10}%`).join(",")})`, [items]);
   return (
-    <section className={`wheel-unit ${compact ? "compact" : ""}`} aria-label={`${title} wheel`}>
-      <div className="wheel-title"><span>{compact ? "✦" : "♥"}</span>{title}</div>
+    <section className="wheel-unit" aria-label={`${title} wheel`}>
+      <div className="wheel-title"><span>♥</span>{title}</div>
       <div className="wheel-wrap">
         <div className="pointer" aria-hidden="true" />
         <div className={`wheel ${spinning ? "is-spinning" : ""}`} style={{ background: gradient, transform: `rotate(${rotation}deg)` }}>
@@ -52,6 +52,21 @@ function Wheel({ title, items, rotation, spinning, compact = false }: { title: s
             return <span className="wheel-label" key={item.name} style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-38%) rotate(90deg)` }}><b>{item.icon}</b><em>{item.name}</em></span>;
           })}
           <div className="wheel-hub"><span>♥</span></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AccessorySelector({ title, items, position, spinning }: { title: string; items: Item[]; position: number; spinning: boolean }) {
+  const reelItems = useMemo(() => Array.from({ length: 400 }, (_, i) => items[i % items.length]), [items]);
+  return (
+    <section className="selector-unit" aria-label={`${title} scrolling selector`}>
+      <div className="selector-title"><span>✦</span>{title}</div>
+      <div className="selector-window">
+        <div className="selector-pointer" aria-hidden="true" />
+        <div className={`selector-track ${spinning ? "is-scrolling" : ""}`} style={{ transform: `translateX(calc(50% - (var(--reel-slot) / 2) - (${position} * var(--reel-slot))))` }}>
+          {reelItems.map((item, i) => <div className={`selector-item ${i === position ? "selected" : ""}`} key={`${item.name}-${i}`}><b>{item.icon}</b><em>{item.name}</em></div>)}
         </div>
       </div>
     </section>
@@ -71,6 +86,7 @@ export default function Home() {
   const sets = [animalsA, animalsB, accessoriesA, accessoriesB];
   const [picks, setPicks] = useState([0, 0, 0, 0]);
   const [rotations, setRotations] = useState([0, 0, 0, 0]);
+  const [reelPositions, setReelPositions] = useState([40, 40]);
   const [spinning, setSpinning] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
   const audioRef = useRef<AudioContext | null>(null);
@@ -129,6 +145,7 @@ export default function Home() {
     setSpinning(true); setHasSpun(false);
     const next = sets.map(() => Math.floor(Math.random() * 10));
     setRotations(prev => prev.map((r, i) => r + 1440 + (10 - next[i]) * 36 - (r % 360)));
+    setReelPositions(prev => prev.map((position, i) => position + 30 + ((next[i + 2] - (position % 10) + 10) % 10)));
     playSpinRatchet();
     timersRef.current.push(window.setTimeout(() => { setPicks(next); setSpinning(false); setHasSpun(true); successSound(); }, 3200));
   };
@@ -142,9 +159,9 @@ export default function Home() {
       </header>
 
       <div className="game-grid">
-        <aside className="wheel-column animal-column">
+        <aside className="wheel-column left-column">
           <Wheel title="Animal #1" items={animalsA} rotation={rotations[0]} spinning={spinning} />
-          <Wheel title="Animal #2" items={animalsB} rotation={rotations[1]} spinning={spinning} />
+          <AccessorySelector title="Accessory #1" items={accessoriesA} position={reelPositions[0]} spinning={spinning} />
         </aside>
 
         <section className={`reveal-stage ${hasSpun ? "celebrate" : ""}`} aria-live="polite">
@@ -169,9 +186,9 @@ export default function Home() {
           <p className="hint">Sound on for the full game-show moment!</p>
         </section>
 
-        <aside className="wheel-column accessory-column">
-          <Wheel title="Accessory #1" items={accessoriesA} rotation={rotations[2]} spinning={spinning} compact />
-          <Wheel title="Accessory #2" items={accessoriesB} rotation={rotations[3]} spinning={spinning} compact />
+        <aside className="wheel-column right-column">
+          <Wheel title="Animal #2" items={animalsB} rotation={rotations[1]} spinning={spinning} />
+          <AccessorySelector title="Accessory #2" items={accessoriesB} position={reelPositions[1]} spinning={spinning} />
         </aside>
       </div>
       <footer><span>✿</span> Made for curious crocheters &amp; creative creatures <span>✿</span></footer>
