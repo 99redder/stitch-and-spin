@@ -58,22 +58,6 @@ function Wheel({ title, items, rotation, spinning }: { title: string; items: Ite
   );
 }
 
-function AccessorySelector({ title, items, position, spinning }: { title: string; items: Item[]; position: number; spinning: boolean }) {
-  const reelItems = useMemo(() => Array.from({ length: 400 }, (_, i) => items[i % items.length]), [items]);
-  const reelSlot = 76;
-  return (
-    <section className="selector-unit" aria-label={`${title} scrolling selector`}>
-      <div className="selector-title"><span>✦</span>{title}</div>
-      <div className="selector-window">
-        <div className="selector-pointer" aria-hidden="true" />
-        <div className={`selector-track ${spinning ? "is-scrolling" : ""}`} style={{ transform: `translateX(calc(50% - ${reelSlot / 2}px - ${position * reelSlot}px))` }}>
-          {reelItems.map((item, i) => <div className={`selector-item ${i === position ? "selected" : ""}`} key={`${item.name}-${i}`}><b>{item.icon}</b><em>{item.name}</em></div>)}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function PickCard({ item, label, revealed }: { item: Item; label: string; revealed: boolean }) {
   return (
     <div className={`pick-card ${revealed ? "revealed" : ""}`}>
@@ -87,13 +71,14 @@ export default function Home() {
   const sets = [animalsA, animalsB, accessoriesA, accessoriesB];
   const [picks, setPicks] = useState([0, 0, 0, 0]);
   const [rotations, setRotations] = useState([0, 0, 0, 0]);
-  const [reelPositions, setReelPositions] = useState([40, 40]);
+  const [accessoryPreview, setAccessoryPreview] = useState([0, 0]);
   const [spinning, setSpinning] = useState(false);
   const [hasSpun, setHasSpun] = useState(false);
   const audioRef = useRef<AudioContext | null>(null);
   const timersRef = useRef<number[]>([]);
+  const intervalsRef = useRef<number[]>([]);
 
-  useEffect(() => () => { timersRef.current.forEach(window.clearTimeout); audioRef.current?.close(); }, []);
+  useEffect(() => () => { timersRef.current.forEach(window.clearTimeout); intervalsRef.current.forEach(window.clearInterval); audioRef.current?.close(); }, []);
 
   const getAudio = () => {
     const AudioCtx = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
@@ -146,9 +131,10 @@ export default function Home() {
     setSpinning(true); setHasSpun(false);
     const next = sets.map(() => Math.floor(Math.random() * 10));
     setRotations(prev => prev.map((r, i) => r + 1440 + (10 - next[i]) * 36 - (r % 360)));
-    setReelPositions(prev => prev.map((position, i) => position + 30 + ((next[i + 2] - (position % 10) + 10) % 10)));
+    const accessoryTicker = window.setInterval(() => setAccessoryPreview(prev => prev.map((value, i) => (value + 1 + i) % 10)), 90);
+    intervalsRef.current.push(accessoryTicker);
     playSpinRatchet();
-    timersRef.current.push(window.setTimeout(() => { setPicks(next); setSpinning(false); setHasSpun(true); successSound(); }, 3200));
+    timersRef.current.push(window.setTimeout(() => { window.clearInterval(accessoryTicker); setAccessoryPreview([next[2], next[3]]); setPicks(next); setSpinning(false); setHasSpun(true); successSound(); }, 3200));
   };
 
   return (
@@ -163,7 +149,6 @@ export default function Home() {
       <div className="game-grid">
         <aside className="wheel-column left-column">
           <Wheel title="Animal #1" items={animalsA} rotation={rotations[0]} spinning={spinning} />
-          <AccessorySelector title="Accessory #1" items={accessoriesA} position={reelPositions[0]} spinning={spinning} />
         </aside>
 
         <section className={`reveal-stage ${hasSpun ? "celebrate" : ""}`} aria-live="polite">
@@ -177,9 +162,9 @@ export default function Home() {
           </div>
           <div className="accessory-strip">
             <span className="styled-label">Styled with</span>
-            <div className="accessory-pick"><i>{sets[2][picks[2]].icon}</i><b>{hasSpun ? sets[2][picks[2]].name : "A surprise"}</b></div>
+            <div className={`accessory-pick ${spinning ? "cycling" : ""}`}><i>{sets[2][accessoryPreview[0]].icon}</i><b>{spinning || hasSpun ? sets[2][accessoryPreview[0]].name : "A surprise"}</b></div>
             <em>+</em>
-            <div className="accessory-pick"><i>{sets[3][picks[3]].icon}</i><b>{hasSpun ? sets[3][picks[3]].name : "A surprise"}</b></div>
+            <div className={`accessory-pick ${spinning ? "cycling" : ""}`}><i>{sets[3][accessoryPreview[1]].icon}</i><b>{spinning || hasSpun ? sets[3][accessoryPreview[1]].name : "A surprise"}</b></div>
           </div>
           <button onClick={spin} disabled={spinning} className="spin-button">
             <span>{spinning ? "SPINNING..." : "SPIN!"}</span><small>{spinning ? "Hold onto your yarn" : "Create my crochet challenge"}</small>
@@ -189,7 +174,6 @@ export default function Home() {
 
         <aside className="wheel-column right-column">
           <Wheel title="Animal #2" items={animalsB} rotation={rotations[1]} spinning={spinning} />
-          <AccessorySelector title="Accessory #2" items={accessoriesB} position={reelPositions[1]} spinning={spinning} />
         </aside>
       </div>
       <footer><span>✿</span> Made for curious crocheters &amp; creative creatures <span>✿</span></footer>
