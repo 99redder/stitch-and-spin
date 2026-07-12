@@ -5,7 +5,7 @@
 html,body,#root { height:100%; overflow:hidden; }
 body { margin:0; background:#fff; color:var(--ink); font-family:var(--font-body), Arial, sans-serif; }
 body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.22; background:linear-gradient(135deg,#fff 0%,#fff7f7 52%,#ffecec 100%); }
-main { height:100dvh; min-height:0; position:relative; overflow:hidden; padding:clamp(8px,1.7vh,18px) 28px 8px; display:grid; grid-template-rows:auto minmax(0,1fr) auto; }
+main { height:100dvh; min-height:0; position:relative; overflow:hidden; padding:clamp(8px,1.7vh,18px) 28px 8px; display:grid; grid-template-rows:auto minmax(0,1fr); }
 .brand-header { width:100%; max-width:960px; height:clamp(105px,17vh,160px); margin:0 auto clamp(8px,1.2vh,14px); display:flex; align-items:center; justify-content:center; text-align:center; }
 .logo-lockup { position:relative; display:grid; grid-template-columns:auto auto; align-items:center; justify-content:center; gap:clamp(20px,2vw,28px); padding:0 12px 12px; }
 .logo-copy { position:relative; z-index:1; }
@@ -59,7 +59,6 @@ h1 span { color:var(--pink); font-family:Georgia,serif; font-style:italic; font-
 .spin-button:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 9px 0 #a72f3e,0 12px 0 var(--ink); }.spin-button:active:not(:disabled){transform:translateY(5px);box-shadow:0 2px 0 #a72f3e,0 4px 0 var(--ink)}.spin-button:disabled{cursor:wait;background:#9b8ab0;box-shadow:0 7px 0 #5f5270,0 10px 0 var(--ink)}
 .spin-button span { display:block; font-family:var(--font-display),Georgia,serif; font-size:30px; font-weight:900; letter-spacing:.08em; }.spin-button small{display:block;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.1em}
 .hint { margin:clamp(6px,1vh,11px) 0 0; font-size:9px; color:#8b7b92; font-weight:800; }
-footer { text-align:center; margin:6px 0 0; font-size:10px; line-height:1; font-weight:800; color:#786b86; letter-spacing:.04em; }footer span{color:var(--red);margin:0 10px}
 @keyframes pop { 0%{transform:scale(.8) rotate(-3deg)} 70%{transform:scale(1.06) rotate(1deg)} 100%{transform:scale(1)} }
 @keyframes stage-land { 0%{transform:scale(.97)} 45%{transform:scale(1.025);box-shadow:0 0 0 8px #ff669955,9px 11px 0 #fecac4} 100%{transform:scale(1)} }
 @keyframes confetti-burst { 0%{opacity:1;transform:translate(-50%,-50%) rotate(0)} 45%{opacity:1} 100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(calc(var(--i) * 65deg))} }

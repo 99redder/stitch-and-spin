@@ -176,7 +176,6 @@ export default function Home() {
           <Wheel title="Animal #2" items={animalsB} rotation={rotations[1]} spinning={spinning} />
         </aside>
       </div>
-      <footer><span>✿</span> Made for curious crocheters &amp; creative creatures <span>✿</span></footer>
     </main>
   );
 }
