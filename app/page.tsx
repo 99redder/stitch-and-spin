@@ -136,9 +136,9 @@ export default function Home() {
   return (
     <main>
       <header className="brand-header">
-        <div className="brand-mark" aria-hidden="true">🧶</div>
+        <figure className="header-art portrait-art"><img src="./florence-cartoon.png" alt="Cartoon portrait of Florence Mae Gifts’ crochet artist" /></figure>
         <div className="logo-lockup"><p className="brand-owner">Florence Mae Gift&apos;s</p><h1>Stitch <span>&amp;</span> Spin</h1><div className="challenge-ribbon"><i>✦</i> The Crochet Creature Challenge <i>✦</i></div></div>
-        <div className="round-label">MAKE<br/>MAGIC!</div>
+        <figure className="header-art dolls-art"><img src="./amigurumi-examples.png" alt="Two colorful amigurumi mashup doll examples" /></figure>
       </header>
 
       <div className="game-grid">
