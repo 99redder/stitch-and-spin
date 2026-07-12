@@ -61,8 +61,8 @@ function Wheel({ title, items, rotation, spinning }: { title: string; items: Ite
 function PickCard({ item, label, revealed }: { item: Item; label: string; revealed: boolean }) {
   return (
     <div className={`pick-card ${revealed ? "revealed" : ""}`}>
-      <div className="pick-image" role="img" aria-label={item.name}><span className="yarn-stitch">⌁</span><span>{item.icon}</span></div>
-      <p>{label}</p><strong>{item.name}</strong>
+      <div className="pick-image" role="img" aria-label={revealed ? item.name : "Mystery animal"}><span className="yarn-stitch">⌁</span><span>{revealed ? item.icon : "?"}</span></div>
+      <p>{label}</p><strong>{revealed ? item.name : "?"}</strong>
     </div>
   );
 }
@@ -162,9 +162,9 @@ export default function Home() {
           </div>
           <div className="accessory-strip">
             <span className="styled-label">Styled with</span>
-            <div className={`accessory-pick ${spinning ? "cycling" : ""}`}><i>{sets[2][accessoryPreview[0]].icon}</i><b>{spinning || hasSpun ? sets[2][accessoryPreview[0]].name : "A surprise"}</b></div>
+            <div className={`accessory-pick ${spinning ? "cycling" : ""}`} aria-label={spinning || hasSpun ? sets[2][accessoryPreview[0]].name : "Mystery accessory"}><i>{spinning || hasSpun ? sets[2][accessoryPreview[0]].icon : "?"}</i>{(spinning || hasSpun) && <b>{sets[2][accessoryPreview[0]].name}</b>}</div>
             <em>+</em>
-            <div className={`accessory-pick ${spinning ? "cycling" : ""}`}><i>{sets[3][accessoryPreview[1]].icon}</i><b>{spinning || hasSpun ? sets[3][accessoryPreview[1]].name : "A surprise"}</b></div>
+            <div className={`accessory-pick ${spinning ? "cycling" : ""}`} aria-label={spinning || hasSpun ? sets[3][accessoryPreview[1]].name : "Mystery accessory"}><i>{spinning || hasSpun ? sets[3][accessoryPreview[1]].icon : "?"}</i>{(spinning || hasSpun) && <b>{sets[3][accessoryPreview[1]].name}</b>}</div>
           </div>
           <button onClick={spin} disabled={spinning} className="spin-button">
             <span>{spinning ? "SPINNING..." : "SPIN!"}</span><small>{spinning ? "Hold onto your yarn" : "Create my crochet challenge"}</small>
